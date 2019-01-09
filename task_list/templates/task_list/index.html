@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Shared Task List</title>
+</head>
+<body>
+  <h1>This is the Task List Sharing</h1>
+  <p>Enter your access key:</p>
+  <input id="accessKeyText" type="text">
+  <input id="accessKeyButton" type="button" value="Enter">
+
+  <script>
+    document.querySelector('#accessKeyText').focus();
+    document.querySelector('#accessKeyText').onkeyup = function(e) {
+      if (e.keyCode === 13) { // enter, return
+        document.querySelector('#accessKeyButton').click();
+      }
+    }
+    document.querySelector('#accessKeyButton').onclick = function(e) {
+      let accessKey = document.querySelector('#accessKeyText').value;
+      window.location.pathname = "{% url 'task_list:room' key='(totally_invalid)' %}".replace("(totally_invalid)", accessKey);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+# VIM
+.ropeproject
+*.sw[po]
+
+# Python
+.py[cod]
+__pycache__
+
+# Django
+db.sqlite3

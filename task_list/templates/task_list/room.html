@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Room {{ access_key }}</title>
+  <style>
+  </style>
+</head>
+<body>
+  <h1>Tasks</h1>
+  <input id="taskCreationText" type="text">
+  <input id="taskCreationButton" type="button" value="Send">
+  <hr>
+  <div id="taskList"></div>
+
+  <script>
+    let accessKey = {{ access_key }};
+
+    let socketUrl = 'ws://' + window.location.host + '/ws/task_list/' + accessKey + '/';
+    let socket = new WebSocket(socketUrl);
+
+    socket.onmessage = function(e) {
+      // Parse task name
+      let data = JSON.parse(e.data);
+      let taskName = data['name'];
+      console.log('Received from socket: ' + taskName);
+      // Create task element
+      let taskElement = document.createElement('p');
+      let taskElementText = document.createTextNode(taskName);
+      let taskList = document.getElementById('taskList');
+      taskElement.appendChild(taskElementText);
+      taskList.appendChild(taskElement);
+    };
+
+    socket.onclose = function(e) {
+      console.log("Websocket connection is closed");
+    };
+
+    document.querySelector('#taskCreationText').focus();
+    document.querySelector('#taskCreationText').onkeyup = function(e) {
+      if (e.keyCode === 13) { // enter, return
+        document.querySelector('#taskCreationButton').click();
+      }
+    };
+
+    document.querySelector('#taskCreationButton').onclick = function(e) {
+      let taskCreationInput = document.querySelector('#taskCreationText');
+      let newTaskName = taskCreationInput.value;
+
+      let data = JSON.stringify({'name': newTaskName});
+      socket.send(data);
+      console.log('Sent to socket: ' + data);
+
+      taskCreationInput.value = "";
+    };
+  </script>
+</body>
+</html>
